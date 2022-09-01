@@ -4,19 +4,21 @@ import googleIconImg from '../assets/images/google-icon.svg';
 import '../styles/auth.scss'
 import { Button } from "../components/Button";
 import { useNavigate } from "react-router-dom";
-import { firebase, auth } from "../services/firebase"
+import { useContext } from "react";
+import { AuthContext } from "../App";
 
 export function Home() {
 
     const navigate = useNavigate();
+    const { user, signInWithGoogle } = useContext(AuthContext);
 
-    function handleCreateRoom() {
-        const provider = new firebase.auth.GoogleAuthProvider();
+    async function handleCreateRoom() {
 
-        auth.signInWithPopup(provider).then(result => {
-            console.log(result)
-            navigate("/rooms/new")
-        })
+        if(!user) {
+            await signInWithGoogle()
+        }
+
+        navigate("/rooms/new")
 
     }
 
